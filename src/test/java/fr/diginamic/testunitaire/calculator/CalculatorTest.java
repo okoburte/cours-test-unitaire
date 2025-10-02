@@ -3,6 +3,9 @@ package fr.diginamic.testunitaire.calculator;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -35,11 +38,32 @@ public class CalculatorTest {
     // ====================== Test NotNull ======================
 
     @Test
+    void shouldThrowException_WhenDividingByZero() {
+        assertThrows(ArithmeticException.class, () -> calculator.div(10, 0));
+    }
+
+    // ====================== Test NotNull ======================
+
+    @Test
     void testCalculatorInstancie() {
         assertNotNull(calculator, "Calculator doit etre instancié");
     }
 
     // ====================== Test Add ======================
+
+    @ParameterizedTest
+    @CsvSource({ "2, 5, 7", "-2, 5, 3" })
+    void shouldReturnExpectedSum_WhenAddingTwoNumbers(int a, int b, int expectedSum) {
+        // Given
+        // calculator = new Calculator();
+        // deja initialisé avant chaque test avec beforeEach
+
+        // When
+        int result = calculator.add(a, b);
+
+        // Then
+        assertEquals(expectedSum, result);
+    }
 
     @Test
     void testAdd2And5() {
@@ -91,6 +115,12 @@ public class CalculatorTest {
     }
 
     // ====================== Test Mul ======================
+
+    @ParameterizedTest
+    @ValueSource(ints = {2, 4, 6, 8, 10})
+    void shouldReturnEvenResult_whenMultiplyingByTwo(int number) {
+        assertEquals(0, calculator.mul(number, 2) % 2);
+    }
 
     @Test
     void testMul2And5() {
