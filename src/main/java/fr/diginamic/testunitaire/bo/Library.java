@@ -4,6 +4,7 @@ import fr.diginamic.testunitaire.services.ExternalBookService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Library {
 
@@ -66,13 +67,24 @@ public class Library {
         return externalService.isBookAvailable(title);
     }
 
+    public int size() {
+        return livres.size();
+    }
+
+    public Optional<Book> findByTitle(String titre) {
+        if (titre == null) return Optional.empty();
+        return livres.stream()
+                .filter(b -> b.getTitre().equals(titre))
+                .findFirst();
+    }
+
     public void importBookFromExternal(String title) {
         if (externalService == null) {
             throw new IllegalStateException("External service not configured");
         }
         Book book = externalService.fetchBookDetails(title);
         if (book == null) {
-            throw new IllegalArgumentException("Book not found in external service: " + title);
+            throw new IllegalStateException("Book not found in external service: " + title);
         }
         addBook(book);
     }
